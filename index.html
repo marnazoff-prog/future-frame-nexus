@@ -77,26 +77,18 @@ async function loadImages(){
 
     try{
 
-        const { data, error } =
-        await supabase.storage
-        .from('Events')
-        .list('test-event')
+       gallery.innerHTML = ''
 
-        console.log('FILES:', data)
-        console.log('ERROR:', error)
+const img = document.createElement('img')
 
-        if(error){
-            status.innerText =
-            'Грешка: ' + error.message
-            return
-        }
+img.src =
+`${supabaseUrl}/storage/v1/object/public/Events/test-event/DSC01372.JPG`
 
-        status.innerText =
-        `Намерени файлове: ${data.length}`
+gallery.appendChild(img)
 
-        gallery.innerHTML = ''
+status.innerText = 'Тестова снимка заредена директно'
 
-        data.forEach(file => {
+return
 
             const img =
             document.createElement('img')
