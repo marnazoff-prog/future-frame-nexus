@@ -19,11 +19,46 @@ header{text-align:center;padding:30px}
 <p>Live Event Gallery</p>
 </header>
 
-<div class="status">Тестова снимка заредена директно</div>
+<div id="status" class="status">Зареждане...</div>
+<div id="gallery" class="gallery"></div>
 
-<div class="gallery">
-<img src="https://rbsxaxonludvljtdaykp.supabase.co/storage/v1/object/public/Events/test-event/DSC01372.JPG">
-</div>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+const supabaseUrl = 'https://rbsxaxonludvljtdaykp.supabase.co'
+const supabaseKey = 'ТУК_СЛОЖИ_PUBLISHABLE_KEY'
+
+const supabase = createClient(supabaseUrl, supabaseKey)
+
+async function loadPhotos(){
+  const { data, error } = await supabase
+    .from('photos')
+    .select('*')
+    .eq('event_slug', 'test-event')
+    .order('created_at', { ascending: false })
+
+  const status = document.getElementById('status')
+  const gallery = document.getElementById('gallery')
+
+  if(error){
+    status.innerText = 'Грешка: ' + error.message
+    console.error(error)
+    return
+  }
+
+  status.innerText = `Намерени снимки: ${data.length}`
+  gallery.innerHTML = ''
+
+  data.forEach(photo => {
+    const img = document.createElement('img')
+    img.src = photo.public_url
+    gallery.appendChild(img)
+  })
+}
+
+loadPhotos()
+setInterval(loadPhotos, 5000)
+</script>
 
 </body>
 </html>
