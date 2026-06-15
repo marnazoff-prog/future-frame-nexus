@@ -29,6 +29,13 @@ header{
 .gallery img{
     width:100%;
     border-radius:12px;
+    display:block;
+}
+
+.status{
+    text-align:center;
+    color:#999;
+    padding:20px;
 }
 </style>
 
@@ -40,6 +47,10 @@ header{
     <h1>Future Frame Nexus</h1>
     <p>Live Event Gallery</p>
 </header>
+
+<div id="status" class="status">
+    Зареждане...
+</div>
 
 <div id="gallery" class="gallery"></div>
 
@@ -58,34 +69,61 @@ const supabase = createClient(
 
 async function loadImages(){
 
-    const { data, error } =
-    await supabase.storage
-    .from('events')
-    .list('test-event')
-
-    if(error){
-        console.error(error)
-        return
-    }
+    const status =
+    document.getElementById('status')
 
     const gallery =
     document.getElementById('gallery')
 
-    gallery.innerHTML = ''
+    try{
 
-    data.forEach(file => {
+        const { data, error } =
+        await supabase.storage
+        .from('Events')
+        .list('test-event')
 
-        const imageUrl =
-        `${supabaseUrl}/storage/v1/object/public/Events/test-event/${file.name}`
+        console.log('FILES:', data)
+        console.log('ERROR:', error)
 
-        const img =
-        document.createElement('img')
+        if(error){
+            status.innerText =
+            'Грешка: ' + error.message
+            return
+        }
 
-        img.src = imageUrl
+        status.innerText =
+        `Намерени файлове: ${data.length}`
 
-        gallery.appendChild(img)
+        gallery.innerHTML = ''
 
-    })
+        data.forEach(file => {
+
+            const img =
+            document.createElement('img')
+
+            img.src =
+            `${supabaseUrl}/storage/v1/object/public/Events/test-event/${file.name}`
+
+            img.onerror = () => {
+                console.log(
+                    'Неуспешно зареждане:',
+                    img.src
+                )
+            }
+
+            gallery.appendChild(img)
+
+        })
+
+    }catch(ex){
+
+        console.error(ex)
+
+        status.innerText =
+        ex.message
+
+    }
+
 }
 
 loadImages()
