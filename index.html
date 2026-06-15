@@ -80,7 +80,7 @@ async function loadImages(){
         const { data, error } =
         await supabase.storage
         .from('Events')
-        .list('test-event')
+        .list('test-event/')
 
         console.log('FILES:', data)
         console.log('ERROR:', error)
