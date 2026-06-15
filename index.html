@@ -1,128 +1,29 @@
 <!DOCTYPE html>
-
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Future Frame Nexus</title>
-
 <style>
-body{
-    margin:0;
-    background:#0f0f0f;
-    color:white;
-    font-family:Arial,sans-serif;
-}
-
-header{
-    text-align:center;
-    padding:30px;
-}
-
-.gallery{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-    gap:20px;
-    padding:20px;
-}
-
-.gallery img{
-    width:100%;
-    border-radius:12px;
-    display:block;
-}
-
-.status{
-    text-align:center;
-    color:#999;
-    padding:20px;
-}
+body{margin:0;background:#0f0f0f;color:white;font-family:Arial,sans-serif}
+header{text-align:center;padding:30px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;padding:20px}
+.gallery img{width:100%;border-radius:12px;display:block}
+.status{text-align:center;color:#999;padding:20px}
 </style>
-
 </head>
-
 <body>
 
 <header>
-    <h1>Future Frame Nexus</h1>
-    <p>Live Event Gallery</p>
+<h1>Future Frame Nexus</h1>
+<p>Live Event Gallery</p>
 </header>
 
-<div id="status" class="status">
-    Зареждане...
+<div class="status">Тестова снимка заредена директно</div>
+
+<div class="gallery">
+<img src="https://rbsxaxonludvljtdaykp.supabase.co/storage/v1/object/public/Events/test-event/DSC01372.JPG">
 </div>
-
-<div id="gallery" class="gallery"></div>
-
-<script type="module">
-
-import { createClient }
-from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-
-const supabaseUrl = 'https://rbsxaxonludvljtdaykp.supabase.co'
-const supabaseKey = 'sb_publishable_SA5DY69tNAwnmDCwYMyBfw_yW2IHtKX'
-
-const supabase = createClient(
-    supabaseUrl,
-    supabaseKey
-)
-
-async function loadImages(){
-
-    const status =
-    document.getElementById('status')
-
-    const gallery =
-    document.getElementById('gallery')
-
-    try{
-
-       gallery.innerHTML = ''
-
-const img = document.createElement('img')
-
-img.src =
-`${supabaseUrl}/storage/v1/object/public/Events/test-event/DSC01372.JPG`
-
-gallery.appendChild(img)
-
-status.innerText = 'Тестова снимка заредена директно'
-
-return
-
-            const img =
-            document.createElement('img')
-
-            img.src =
-            `${supabaseUrl}/storage/v1/object/public/Events/test-event/${file.name}`
-
-            img.onerror = () => {
-                console.log(
-                    'Неуспешно зареждане:',
-                    img.src
-                )
-            }
-
-            gallery.appendChild(img)
-
-        })
-
-    }catch(ex){
-
-        console.error(ex)
-
-        status.innerText =
-        ex.message
-
-    }
-
-}
-
-loadImages()
-
-setInterval(loadImages,5000)
-
-</script>
 
 </body>
 </html>
