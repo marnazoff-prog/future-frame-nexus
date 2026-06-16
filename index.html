@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="bg">
 <head>
 <meta charset="UTF-8">
@@ -7,67 +6,110 @@
 <title>Future Frame Nexus</title>
 
 <style>
+*{box-sizing:border-box}
+
 body{
     margin:0;
-    background:#0f0f0f;
+    background:#080808;
     color:white;
     font-family:Arial,sans-serif;
 }
 
 header{
+    padding:40px 20px 25px;
     text-align:center;
-    padding:30px;
+    background:linear-gradient(180deg,#111,#080808);
+    border-bottom:1px solid #222;
 }
 
-.gallery{
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-    gap:20px;
-    padding:20px;
+.logo{
+    font-size:14px;
+    letter-spacing:3px;
+    color:#888;
+    text-transform:uppercase;
+    margin-bottom:12px;
 }
 
-.gallery img{
-    width:100%;
-    border-radius:12px;
-    display:block;
+h1{
+    margin:0;
+    font-size:42px;
+}
+
+.event-name{
+    margin-top:12px;
+    color:#00d4ff;
+    font-size:20px;
 }
 
 .status{
     text-align:center;
-    color:#999;
-    padding:20px;
+    color:#aaa;
+    padding:18px;
+    font-size:15px;
 }
 
-.event-name{
-    color:#00d4ff;
-    margin-top:10px;
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:18px;
+    padding:22px;
+    max-width:1400px;
+    margin:0 auto;
+}
+
+.card{
+    background:#151515;
+    border:1px solid #252525;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);
+}
+
+.card img{
+    width:100%;
+    height:100%;
+    display:block;
+    object-fit:cover;
+}
+
+.empty{
+    text-align:center;
+    color:#777;
+    padding:60px 20px;
+}
+
+footer{
+    text-align:center;
+    color:#555;
+    padding:30px;
+    font-size:13px;
 }
 </style>
-
 </head>
 
 <body>
 
 <header>
-    <h1>Future Frame Nexus</h1>
-    <h3 id="eventName" class="event-name"></h3>
+    <div class="logo">Future Frame</div>
+    <h1>Nexus Live Gallery</h1>
+    <div id="eventName" class="event-name"></div>
 </header>
 
-<div id="status" class="status">
-    Зареждане...
-</div>
-
+<div id="status" class="status">Зареждане на галерията...</div>
 <div id="gallery" class="gallery"></div>
 
-<script type="module">
+<footer>
+    Powered by Future Frame Nexus
+</footer>
 
-import { createClient }
-from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
 const supabaseUrl = 'https://rbsxaxonludvljtdaykp.supabase.co'
-const supabaseKey = 'sb_publishable_SA5DY69tNAwnmDCwYMyBfw_yW2IHtKX'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJic3hheG9ubHVkdmxqdGRheWtwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTU1MjAxMCwiZXhwIjoyMDk3MTI4MDEwfQ.V2mZ3V8W2pKBSdUs8eI3nJRi2iai3ZpNnz7Cepqiu7Y'
 
 const params = new URLSearchParams(window.location.search)
+
 let eventSlug = params.get('event')
 
 if (!eventSlug) {
@@ -79,60 +121,50 @@ if (!eventSlug) {
 
 eventSlug = eventSlug || 'test-event'
 
-document.getElementById('eventName').innerText =
-eventSlug
+document.getElementById('eventName').innerText = eventSlug
 
-const supabase =
-createClient(
-    supabaseUrl,
-    supabaseKey
-)
+const supabase = createClient(supabaseUrl, supabaseKey)
 
 async function loadPhotos(){
+    const status = document.getElementById('status')
+    const gallery = document.getElementById('gallery')
 
-    const status =
-    document.getElementById('status')
-
-    const gallery =
-    document.getElementById('gallery')
-
-    const { data, error } =
-    await supabase
-    .from('photos')
-    .select('*')
-    .eq('event_slug', eventSlug)
-    .order('created_at', { ascending:false })
+    const { data, error } = await supabase
+        .from('photos')
+        .select('*')
+        .eq('event_slug', eventSlug)
+        .order('created_at', { ascending:false })
 
     if(error){
-        status.innerText =
-        error.message
+        status.innerText = 'Грешка при зареждане'
         console.error(error)
         return
     }
 
-    status.innerText =
-    `Снимки: ${data.length}`
+    status.innerText = `Снимки: ${data.length} • обновява се автоматично`
 
     gallery.innerHTML = ''
 
+    if(data.length === 0){
+        gallery.innerHTML = '<div class="empty">Все още няма снимки за това събитие.</div>'
+        return
+    }
+
     data.forEach(photo => {
+        const card = document.createElement('div')
+        card.className = 'card'
 
-        const img =
-        document.createElement('img')
+        const img = document.createElement('img')
+        img.src = photo.public_url
+        img.loading = 'lazy'
 
-        img.src =
-        photo.public_url
-
-        gallery.appendChild(img)
-
+        card.appendChild(img)
+        gallery.appendChild(card)
     })
-
 }
 
 loadPhotos()
-
 setInterval(loadPhotos,5000)
-
 </script>
 
 </body>
