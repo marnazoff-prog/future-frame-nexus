@@ -158,6 +158,7 @@ document.addEventListener('keydown', e => {
         lightbox.classList.remove('active')
     }
 })
+    let shownPhotos = new Set()
 
 async function loadPhotos(){
     const status = document.getElementById('status')
@@ -177,7 +178,10 @@ async function loadPhotos(){
 
     status.innerText = `Снимки: ${data.length} • обновява се автоматично`
 
-    gallery.innerHTML = ''
+    if(data.length === 0){
+    gallery.innerHTML = '<div class="empty">Все още няма снимки за това събитие.</div>'
+    return
+}
 
     if(data.length === 0){
         gallery.innerHTML = '<div class="empty">Все още няма снимки за това събитие.</div>'
@@ -185,6 +189,11 @@ async function loadPhotos(){
     }
 
     data.forEach(photo => {
+        if(shownPhotos.has(photo.id)){
+    return
+}
+
+shownPhotos.add(photo.id)
         const card = document.createElement('div')
         card.className = 'card'
 
