@@ -68,7 +68,16 @@ const supabaseUrl = 'https://rbsxaxonludvljtdaykp.supabase.co'
 const supabaseKey = 'sb_publishable_SA5DY69tNAwnmDCwYMyBfw_yW2IHtKX'
 
 const params = new URLSearchParams(window.location.search)
-const eventSlug = params.get('event') || 'test-event'
+let eventSlug = params.get('event')
+
+if (!eventSlug) {
+    const pathParts = window.location.pathname.split('/')
+    if (pathParts[1] === 'event' && pathParts[2]) {
+        eventSlug = pathParts[2]
+    }
+}
+
+eventSlug = eventSlug || 'test-event'
 
 document.getElementById('eventName').innerText =
 eventSlug
