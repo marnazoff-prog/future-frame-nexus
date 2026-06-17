@@ -397,15 +397,14 @@ lightbox.addEventListener('touchend', e => {
     }
 })
 async function updateVisitor(){
-    await supabase
-        .from('visitors')
-        .upsert({
-            event_slug: eventSlug,
-            session_id: sessionId,
-            last_seen: new Date().toISOString()
-        }, {
-            onConflict: 'session_id'
-        })
+    const { error } = await supabase.rpc('track_visitor', {
+        p_event_slug: eventSlug,
+        p_session_id: sessionId
+    })
+
+    if(error){
+        console.error('VISITOR ERROR:', error)
+    }
 }
 
 async function loadOnlineGuests(){
