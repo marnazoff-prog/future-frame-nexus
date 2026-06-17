@@ -454,15 +454,17 @@ async function loadPhotos(){
 
 if(data.length > 0){
     const lastDate = new Date(data[0].created_at)
+    const secondsAgo = Math.floor((Date.now() - lastDate.getTime()) / 1000)
 
-document.getElementById('dashLastUpload').innerText =
-    lastDate.toLocaleTimeString('bg-BG', {
-        timeZone: 'Europe/Sofia',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    })
+    let text = `${secondsAgo} сек. ago`
+
+    if(secondsAgo > 60){
+        text = `${Math.floor(secondsAgo / 60)} мин. ago`
+    }
+
+    document.getElementById('dashLastUpload').innerText = text
 }
+
 
     if(data.length === 0){
         gallery.innerHTML = '<div class="empty">Все още няма снимки за това събитие.</div>'
