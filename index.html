@@ -158,6 +158,26 @@ footer{
         display:none;
     }
 }
+    .lightbox-actions{
+    position:fixed;
+    bottom:48px;
+    left:50%;
+    transform:translateX(-50%);
+    display:flex;
+    gap:12px;
+    z-index:10000;
+}
+
+.action-btn{
+    background:rgba(255,255,255,.14);
+    color:white;
+    border:1px solid rgba(255,255,255,.25);
+    padding:10px 18px;
+    border-radius:999px;
+    text-decoration:none;
+    font-size:14px;
+    cursor:pointer;
+}
 </style>
 </head>
 
@@ -179,6 +199,12 @@ footer{
     <button id="prevBtn" class="nav left">‹</button>
     <img id="lightboxImage">
     <button id="nextBtn" class="nav right">›</button>
+
+    <div class="lightbox-actions">
+        <a id="downloadBtn" class="action-btn" download>Download</a>
+        <button id="shareBtn" class="action-btn">Share</button>
+    </div>
+
     <div id="counter" class="counter"></div>
 </div>
 
@@ -208,6 +234,8 @@ const status = document.getElementById('status')
 const lightbox = document.getElementById('lightbox')
 const lightboxImage = document.getElementById('lightboxImage')
 const counter = document.getElementById('counter')
+    const downloadBtn = document.getElementById('downloadBtn')
+const shareBtn = document.getElementById('shareBtn')
 const closeBtn = document.getElementById('closeBtn')
 const prevBtn = document.getElementById('prevBtn')
 const nextBtn = document.getElementById('nextBtn')
@@ -230,8 +258,15 @@ function closeLightbox(){
 
 function updateLightbox(){
     if(photos.length === 0) return
-    lightboxImage.src = photos[currentPhotoIndex].public_url
+
+    const currentPhoto = photos[currentPhotoIndex]
+
+    lightboxImage.src = currentPhoto.public_url
+    downloadBtn.href = currentPhoto.public_url
+    downloadBtn.setAttribute('download', currentPhoto.file_name || 'future-frame-photo.jpg')
+
     counter.innerText = `${currentPhotoIndex + 1} / ${photos.length}`
+}
 }
 
 function nextPhoto(){
@@ -254,6 +289,29 @@ nextBtn.addEventListener('click', e => {
 prevBtn.addEventListener('click', e => {
     e.stopPropagation()
     prevPhoto()
+    shareBtn.addEventListener('click', async () => {
+
+    const currentPhoto = photos[currentPhotoIndex]
+
+    if(navigator.share){
+
+        await navigator.share({
+            title: 'Future Frame Nexus',
+            text: 'Виж тази снимка от събитието',
+            url: currentPhoto.public_url
+        })
+
+    }else{
+
+        navigator.clipboard.writeText(
+            currentPhoto.public_url
+        )
+
+        alert('Линкът е копиран')
+
+    }
+
+})
 })
 
 lightbox.addEventListener('click', e => {
