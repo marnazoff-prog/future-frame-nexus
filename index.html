@@ -295,6 +295,15 @@ let shownPhotos = new Set()
 let currentPhotoIndex = 0
 let touchStartX = 0
 let touchEndX = 0
+    let sessionId = localStorage.getItem('nexus_session_id')
+
+if(!sessionId){
+    sessionId = crypto.randomUUID()
+    localStorage.setItem(
+        'nexus_session_id',
+        sessionId
+    )
+}
 
 function openLightbox(index){
     currentPhotoIndex = index
@@ -387,7 +396,33 @@ lightbox.addEventListener('touchend', e => {
         }
     }
 })
+async function updateVisitor(){
+    await supabase
+        .from('visitors')
+        .upsert({
+            event_slug: eventSlug,
+            session_id: sessionId,
+            last_seen: new Date().toISOString()
+        }, {
+            onConflict: 'session_id'
+        })
+}
 
+async function loadOnlineGuests(){
+    const twoMinutesAgo =
+        new Date(Date.now() - 2 * 60 * 1000).toISOString()
+
+    const { data, error } =
+        await supabase
+        .from('visitors')
+        .select('session_id')
+        .eq('event_slug', eventSlug)
+        .gte('last_seen', twoMinutesAgo)
+
+    if(!error){
+        document.getElementById('dashOnline').innerText = data.length
+    }
+}
 async function loadPhotos(){
     const { data, error } = await supabase
         .from('photos')
@@ -449,7 +484,12 @@ if(data.length > 0){
 }
 
 loadPhotos()
+updateVisitor()
+loadOnlineGuests()
+
 setInterval(loadPhotos,5000)
+setInterval(updateVisitor,30000)
+setInterval(loadOnlineGuests,10000)
 </script>
 
 </body>
