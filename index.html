@@ -178,6 +178,36 @@ footer{
     font-size:14px;
     cursor:pointer;
 }
+    .dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:12px;
+    max-width:900px;
+    margin:20px auto 0;
+    padding:0 20px;
+}
+
+.dashboard div{
+    background:#121212;
+    border:1px solid #252525;
+    border-radius:14px;
+    padding:16px;
+    text-align:center;
+}
+
+.dashboard span{
+    display:block;
+    color:#777;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:6px;
+}
+
+.dashboard strong{
+    font-size:20px;
+    color:white;
+}
 </style>
 </head>
 
@@ -188,6 +218,21 @@ footer{
     <h1>Nexus Live Gallery</h1>
     <div id="eventName" class="event-name"></div>
 </header>
+
+<div class="dashboard">
+    <div>
+        <span>Event</span>
+        <strong id="dashEvent">-</strong>
+    </div>
+    <div>
+        <span>Photos</span>
+        <strong id="dashPhotos">0</strong>
+    </div>
+    <div>
+        <span>Last upload</span>
+        <strong id="dashLastUpload">-</strong>
+    </div>
+</div>
 
 <div id="status" class="status">Зареждане на галерията...</div>
 <div id="gallery" class="gallery"></div>
@@ -226,6 +271,7 @@ if (!eventSlug) {
 
 eventSlug = eventSlug || 'test-event'
 document.getElementById('eventName').innerText = eventSlug
+    document.getElementById('dashEvent').innerText = eventSlug
 
 const supabase = createClient(supabaseUrl, supabaseKey)
 
@@ -352,6 +398,17 @@ async function loadPhotos(){
     }
 
     status.innerText = `Снимки: ${data.length} • обновява се автоматично`
+    document.getElementById('dashPhotos').innerText = data.length
+
+if(data.length > 0){
+    const lastDate = new Date(data[0].created_at)
+    document.getElementById('dashLastUpload').innerText =
+        lastDate.toLocaleTimeString('bg-BG', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        })
+}
 
     if(data.length === 0){
         gallery.innerHTML = '<div class="empty">Все още няма снимки за това събитие.</div>'
