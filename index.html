@@ -453,14 +453,22 @@ async function loadPhotos(){
     document.getElementById('dashPhotos').innerText = data.length
 
 if(data.length > 0){
-    const lastDate = new Date(data[0].created_at)
+   const lastDate = new Date(data[0].created_at + 'Z')
     const secondsAgo = Math.floor((Date.now() - lastDate.getTime()) / 1000)
 
-    let text = `${secondsAgo} сек. ago`
+   let text = `${secondsAgo} sec ago`
 
-    if(secondsAgo > 60){
-        text = `${Math.floor(secondsAgo / 60)} мин. ago`
-    }
+if(secondsAgo >= 60){
+    text = `${Math.floor(secondsAgo / 60)} min ago`
+}
+
+if(secondsAgo >= 3600){
+    text = `${Math.floor(secondsAgo / 3600)} h ago`
+}
+
+if(secondsAgo >= 86400){
+    text = `${Math.floor(secondsAgo / 86400)} d ago`
+}
 
     document.getElementById('dashLastUpload').innerText = text
 }
