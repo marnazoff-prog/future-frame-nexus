@@ -408,20 +408,24 @@ async function updateVisitor(){
 }
 
 async function loadOnlineGuests(){
+
     const twoMinutesAgo =
         new Date(Date.now() - 2 * 60 * 1000).toISOString()
 
     const { data, error } =
         await supabase
         .from('visitors')
-        .select('session_id')
+        .select('*')
         .eq('event_slug', eventSlug)
         .gte('last_seen', twoMinutesAgo)
 
+    console.log('ONLINE DATA:', data)
+    console.log('ONLINE ERROR:', error)
+
     if(!error){
-    console.log('ONLINE:', data)
-    document.getElementById('dashOnline').innerText = data.length
-}
+        document.getElementById('dashOnline').innerText =
+            data.length
+    }
 }
 async function loadPhotos(){
     const { data, error } = await supabase
