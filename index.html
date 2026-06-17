@@ -419,8 +419,9 @@ async function loadOnlineGuests(){
         .gte('last_seen', twoMinutesAgo)
 
     if(!error){
-        document.getElementById('dashOnline').innerText = data.length
-    }
+    console.log('ONLINE:', data)
+    document.getElementById('dashOnline').innerText = data.length
+}
 }
 async function loadPhotos(){
     const { data, error } = await supabase
