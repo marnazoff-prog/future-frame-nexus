@@ -408,24 +408,17 @@ async function updateVisitor(){
 }
 
 async function loadOnlineGuests(){
+    const { data, error } = await supabase.rpc('count_online_visitors', {
+        p_event_slug: eventSlug
+    })
 
-    const twoMinutesAgo =
-        new Date(Date.now() - 2 * 60 * 1000).toISOString()
-
-    const { data, error } =
-        await supabase
-        .from('visitors')
-        .select('*')
-        .eq('event_slug', eventSlug)
-        .gte('last_seen', twoMinutesAgo)
-
-    console.log('ONLINE DATA:', data)
-    console.log('ONLINE ERROR:', error)
-
-    if(!error){
-        document.getElementById('dashOnline').innerText =
-            data.length
+    if(error){
+        console.error('ONLINE ERROR:', error)
+        return
     }
+
+    document.getElementById('dashOnline').innerText = data
+}
 }
 async function loadPhotos(){
     const { data, error } = await supabase
