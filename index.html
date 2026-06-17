@@ -234,7 +234,7 @@ const status = document.getElementById('status')
 const lightbox = document.getElementById('lightbox')
 const lightboxImage = document.getElementById('lightboxImage')
 const counter = document.getElementById('counter')
-    const downloadBtn = document.getElementById('downloadBtn')
+const downloadBtn = document.getElementById('downloadBtn')
 const shareBtn = document.getElementById('shareBtn')
 const closeBtn = document.getElementById('closeBtn')
 const prevBtn = document.getElementById('prevBtn')
@@ -267,7 +267,6 @@ function updateLightbox(){
 
     counter.innerText = `${currentPhotoIndex + 1} / ${photos.length}`
 }
-}
 
 function nextPhoto(){
     if(photos.length === 0) return
@@ -282,36 +281,30 @@ function prevPhoto(){
 }
 
 closeBtn.addEventListener('click', closeLightbox)
+
 nextBtn.addEventListener('click', e => {
     e.stopPropagation()
     nextPhoto()
 })
+
 prevBtn.addEventListener('click', e => {
     e.stopPropagation()
     prevPhoto()
-    shareBtn.addEventListener('click', async () => {
+})
 
+shareBtn.addEventListener('click', async () => {
     const currentPhoto = photos[currentPhotoIndex]
 
     if(navigator.share){
-
         await navigator.share({
             title: 'Future Frame Nexus',
             text: 'Виж тази снимка от събитието',
             url: currentPhoto.public_url
         })
-
     }else{
-
-        navigator.clipboard.writeText(
-            currentPhoto.public_url
-        )
-
+        navigator.clipboard.writeText(currentPhoto.public_url)
         alert('Линкът е копиран')
-
     }
-
-})
 })
 
 lightbox.addEventListener('click', e => {
