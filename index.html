@@ -11,34 +11,51 @@
 
 body{
     margin:0;
-    background:
-        radial-gradient(circle at 20% 0%,rgba(247,158,27,.18),transparent 28%),
-        radial-gradient(circle at 80% 10%,rgba(235,0,27,.18),transparent 30%),
-        radial-gradient(circle at 50% 100%,rgba(255,255,255,.04),transparent 35%),
-        #050505;
     color:white;
     font-family:Arial,sans-serif;
+    background:
+        radial-gradient(circle at 15% 25%, rgba(235,0,27,.22), transparent 28%),
+        radial-gradient(circle at 85% 35%, rgba(247,158,27,.22), transparent 30%),
+        radial-gradient(circle at 50% 100%, rgba(255,255,255,.03), transparent 40%),
+        #050505;
 }
 
 header{
-    padding:50px 20px 30px;
+    padding:55px 20px 34px;
     text-align:center;
     border-bottom:1px solid rgba(255,255,255,.08);
+    position:relative;
+    overflow:hidden;
+}
+
+header::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        radial-gradient(circle at 12% 55%, rgba(235,0,27,.32), transparent 26%),
+        radial-gradient(circle at 88% 60%, rgba(247,158,27,.32), transparent 26%);
+    opacity:.9;
+    pointer-events:none;
+}
+
+header > *{
+    position:relative;
+    z-index:2;
 }
 
 .brand-mark{
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:0;
     margin-bottom:18px;
 }
 
 .circle{
-    width:54px;
-    height:54px;
+    width:58px;
+    height:58px;
     border-radius:50%;
-    opacity:.92;
+    opacity:.95;
 }
 
 .circle.red{
@@ -55,25 +72,36 @@ header{
     letter-spacing:4px;
     color:#aaa;
     text-transform:uppercase;
-    margin-bottom:14px;
+    margin-bottom:20px;
 }
 
 h1{
     margin:0;
     font-size:44px;
-    letter-spacing:-1px;
+    letter-spacing:10px;
+    font-weight:500;
 }
 
 .subtitle{
-    margin-top:12px;
-    color:#bbb;
-    font-size:16px;
+    margin-top:18px;
+    color:#ddd;
+    letter-spacing:4px;
+    font-size:14px;
+    text-transform:uppercase;
+}
+
+.year{
+    margin-top:22px;
+    color:#F79E1B;
+    font-size:30px;
+    letter-spacing:7px;
+    font-weight:bold;
 }
 
 .event-name{
-    margin-top:16px;
+    margin-top:18px;
     color:#F79E1B;
-    font-size:20px;
+    font-size:18px;
 }
 
 .dashboard{
@@ -81,17 +109,17 @@ h1{
     grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
     gap:14px;
     max-width:1050px;
-    margin:26px auto 0;
+    margin:28px auto 0;
     padding:0 20px;
 }
 
 .dashboard div{
-    background:rgba(255,255,255,.055);
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:18px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+    backdrop-filter:blur(12px);
+    border-radius:22px;
     padding:18px;
     text-align:center;
-    backdrop-filter:blur(10px);
 }
 
 .dashboard span{
@@ -127,17 +155,17 @@ h1{
 .card{
     background:#111;
     border:1px solid rgba(255,255,255,.08);
-    border-radius:18px;
+    border-radius:22px;
     overflow:hidden;
     box-shadow:0 12px 35px rgba(0,0,0,.45);
     transition:.25s ease;
 }
 
 .card:hover{
-    transform:translateY(-4px);
+    transform:translateY(-6px);
     box-shadow:
-        0 0 25px rgba(235,0,27,.26),
-        0 0 45px rgba(247,158,27,.16);
+        0 0 20px rgba(235,0,27,.25),
+        0 0 45px rgba(247,158,27,.15);
 }
 
 .card img{
@@ -159,6 +187,7 @@ footer{
     color:#555;
     padding:34px;
     font-size:13px;
+    letter-spacing:1px;
 }
 
 .lightbox{
@@ -180,6 +209,9 @@ footer{
     max-height:88%;
     object-fit:contain;
     border-radius:14px;
+    box-shadow:
+        0 0 28px rgba(235,0,27,.22),
+        0 0 55px rgba(247,158,27,.16);
 }
 
 .nav{
@@ -247,13 +279,30 @@ footer{
 }
 
 @media(max-width:700px){
-    h1{font-size:30px}
-    .subtitle{font-size:14px}
+    header{
+        padding:42px 16px 28px;
+    }
+
+    h1{
+        font-size:28px;
+        letter-spacing:5px;
+    }
+
+    .subtitle{
+        font-size:12px;
+        letter-spacing:2px;
+    }
+
+    .year{
+        font-size:24px;
+    }
+
     .gallery{
         grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
         gap:12px;
         padding:12px;
     }
+
     .nav{display:none}
 }
 </style>
@@ -270,8 +319,9 @@ footer{
 
 ```
 <div class="logo">Mastercard Event Experience</div>
-<h1>Live Photo Gallery</h1>
-<div class="subtitle">Captured moments, updated in real time</div>
+<h1>FUTURE OF PAYMENTS</h1>
+<div class="subtitle">Connecting. Innovating. Empowering.</div>
+<div class="year">2026</div>
 <div id="eventName" class="event-name"></div>
 ```
 
@@ -347,8 +397,11 @@ if (!eventSlug) {
 
 eventSlug = eventSlug || 'test-event'
 
-document.getElementById('eventName').innerText = eventSlug
-document.getElementById('dashEvent').innerText = eventSlug
+document.getElementById('eventName').innerText =
+'Mastercard Future of Payments 2026'
+
+document.getElementById('dashEvent').innerText =
+'Mastercard 2026'
 
 const supabase = createClient(supabaseUrl, supabaseKey)
 
