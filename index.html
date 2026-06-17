@@ -233,6 +233,10 @@ footer{
     <strong id="dashOnline">0</strong>
 </div>
     <div>
+    <span>Total visitors</span>
+    <strong id="dashTotalVisitors">0</strong>
+</div>
+    <div>
         <span>Last upload</span>
         <strong id="dashLastUpload">-</strong>
     </div>
@@ -419,6 +423,18 @@ async function loadOnlineGuests(){
 
     document.getElementById('dashOnline').innerText = data
 }
+    async function loadTotalVisitors(){
+    const { data, error } = await supabase.rpc('count_total_visitors', {
+        p_event_slug: eventSlug
+    })
+
+    if(error){
+        console.error('TOTAL VISITORS ERROR:', error)
+        return
+    }
+
+    document.getElementById('dashTotalVisitors').innerText = data
+}
 
 async function loadPhotos(){
     const { data, error } = await supabase
@@ -483,6 +499,7 @@ if(data.length > 0){
 loadPhotos()
 updateVisitor()
 loadOnlineGuests()
+loadTotalVisitors()
 
 setInterval(loadPhotos,5000)
 setInterval(updateVisitor,30000)
